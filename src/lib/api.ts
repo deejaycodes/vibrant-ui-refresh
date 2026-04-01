@@ -1,10 +1,3 @@
-import {
-  isDemoMode, demoDashboard, demoReports, demoReferrals, demoReferralDetail,
-  demoCaseNotes, demoHandoffs, demoMeetings, demoServices, demoAnalytics,
-  demoSettings, demoAdminStats, demoAdminUsers, demoAdminPrompts,
-  demoAdminReviews, demoAuditLog,
-} from "./demo-data";
-
 const API_BASE = "https://api.safevoice.org";
 
 export function getTenant(): string {
