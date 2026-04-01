@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, Shield, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import QuickExit from "./QuickExit";
+
 import TenantSwitcher from "./TenantSwitcher";
 import { logout } from "@/lib/auth";
 
@@ -20,7 +20,7 @@ const PortalLayout = ({ children }: PortalLayoutProps) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <QuickExit />
+      
       <header className="border-b bg-card">
         <div className="container flex items-center justify-between h-14">
           <div className="flex items-center gap-6">

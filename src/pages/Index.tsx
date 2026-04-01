@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Shield, Phone, Heart, Scale, Baby, Lock, Clock, Globe, MessageCircle, ArrowRight, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import QuickExit from "@/components/QuickExit";
+
 
 const helpCards = [
   { icon: Shield, title: "Safety Planning", desc: "Personalised safety strategies to help protect you and your family." },
@@ -30,7 +30,7 @@ const trustIndicators = [
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <QuickExit />
+      
 
       {/* Header */}
       <header className="border-b bg-card">

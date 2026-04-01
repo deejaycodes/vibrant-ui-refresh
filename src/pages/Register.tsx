@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { register } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle } from "lucide-react";
-import QuickExit from "@/components/QuickExit";
+
 
 const Register = () => {
   const [form, setForm] = useState({ orgName: "", contactPerson: "", email: "", phone: "", password: "" });
@@ -34,7 +34,6 @@ const Register = () => {
   if (success) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <QuickExit />
         <div className="flex-1 flex items-center justify-center p-4">
           <Card className="w-full max-w-md text-center">
             <CardContent className="p-8 space-y-4">
@@ -55,7 +54,7 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <QuickExit />
+      
       <div className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">

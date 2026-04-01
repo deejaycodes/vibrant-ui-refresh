@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { login } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
-import QuickExit from "@/components/QuickExit";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -30,7 +30,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <QuickExit />
+      
       <div className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
