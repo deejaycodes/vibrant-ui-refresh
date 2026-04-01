@@ -55,57 +55,6 @@ async function apiFetch(path: string, options: RequestInit = {}) {
   }
 }
 
-function getDemoFallback(path: string, method?: string): any {
-  // Dashboard
-  if (path === "/api/dashboard") return demoDashboard;
-  if (path === "/api/reports") return demoReports;
-
-  // Referrals
-  if (path === "/api/referrals" && (!method || method === "GET")) return demoReferrals;
-  if (path.match(/^\/api\/referrals\/[^/]+$/) && method === "PUT") return { success: true };
-  if (path.match(/^\/api\/referrals\/[^/]+$/)) {
-    const id = path.split("/").pop()!;
-    return demoReferralDetail(id);
-  }
-  if (path.match(/^\/api\/referrals\/[^/]+\/notes$/) && method === "POST") return { success: true };
-  if (path.match(/^\/api\/referrals\/[^/]+\/notes$/)) return demoCaseNotes;
-
-  // Handoffs
-  if (path === "/api/handoffs") return method === "POST" ? { success: true } : demoHandoffs;
-  if (path.match(/\/messages$/)) return method === "POST" ? { success: true } : [];
-  if (path.match(/\/typing$/)) return { success: true };
-  if (path.match(/\/presence$/)) return { online: false, typing: false };
-  if (path.match(/\/read$/)) return { success: true };
-
-  // Copilot
-  if (path === "/api/copilot") return { reply: "I'm running in demo mode. In production, I can help with case guidance, legal rights information, and safety planning. How can I assist you?" };
-
-  // Meetings
-  if (path === "/api/meetings") return method === "POST" ? { success: true } : demoMeetings;
-  if (path.match(/\/safe-window$/)) return method === "PUT" ? { success: true } : { windows: [] };
-
-  // Services
-  if (path === "/api/services") return demoServices;
-
-  // Analytics
-  if (path === "/api/analytics") return demoAnalytics;
-
-  // Settings
-  if (path === "/api/settings") return method === "PUT" ? { success: true } : demoSettings;
-
-  // Admin
-  if (path === "/api/admin/stats") return demoAdminStats;
-  if (path === "/api/admin/health") return { status: "healthy", uptime: "72h", version: "1.4.0" };
-  if (path === "/api/admin/generations") return { generations: [] };
-  if (path === "/api/admin/cron") return { success: true };
-  if (path.match(/^\/api\/admin\/users/)) return method === "PUT" ? { success: true } : demoAdminUsers;
-  if (path.match(/^\/api\/admin\/prompts/)) return method === "PUT" ? { success: true } : demoAdminPrompts;
-  if (path.match(/^\/api\/admin\/reviews/)) return method === "PUT" ? { success: true } : demoAdminReviews;
-  if (path.match(/^\/api\/admin\/audit/)) return demoAuditLog;
-
-  return {};
-}
-
 // ─── Dashboard ───
 export async function getDashboard() {
   return apiFetch("/api/dashboard");
