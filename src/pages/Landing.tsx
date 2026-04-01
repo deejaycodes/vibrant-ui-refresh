@@ -248,7 +248,7 @@ const Landing = () => {
           Partner with SafeVoice to give your service users instant, multilingual
           domestic abuse support powered by AI.
         </p>
-        <Link to="/register">
+        <Link to="/partners">
           <Button
             variant="outline"
             size="lg"
