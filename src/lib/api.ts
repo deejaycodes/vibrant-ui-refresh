@@ -1,11 +1,20 @@
 const API_BASE = import.meta.env.VITE_API_URL || "https://api.safevoice.org";
 
-function getTenant(): string {
+export function getTenant(): string {
   return localStorage.getItem("safevoice_tenant") || "uk";
 }
 
-function getToken(): string | null {
+export function setTenant(id: string) {
+  localStorage.setItem("safevoice_tenant", id);
+}
+
+export function getToken(): string | null {
   return localStorage.getItem("safevoice_token");
+}
+
+export function handleAuthError() {
+  localStorage.removeItem("safevoice_token");
+  window.location.href = "/";
 }
 
 async function apiFetch(path: string, options: RequestInit = {}) {
@@ -23,10 +32,15 @@ async function apiFetch(path: string, options: RequestInit = {}) {
   }
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5000);
+  const timeout = setTimeout(() => controller.abort(), 8000);
 
   const res = await fetch(`${API_BASE}${path}`, { ...options, headers, signal: controller.signal });
   clearTimeout(timeout);
+
+  if (res.status === 401) {
+    handleAuthError();
+    throw new Error("Unauthorized");
+  }
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ message: res.statusText }));
@@ -36,7 +50,7 @@ async function apiFetch(path: string, options: RequestInit = {}) {
   return res.json();
 }
 
-// Dashboard
+// ─── Dashboard ───
 export async function getDashboard() {
   return apiFetch("/api/dashboard");
 }
@@ -45,6 +59,7 @@ export async function getReports() {
   return apiFetch("/api/reports");
 }
 
+// ─── Referrals ───
 export async function getReferrals() {
   return apiFetch("/api/referrals");
 }
@@ -53,40 +68,95 @@ export async function getReferralDetail(id: string) {
   return apiFetch(`/api/referrals/${id}`);
 }
 
-// Copilot
+export async function updateReferral(id: string, status: string) {
+  return apiFetch(`/api/referrals/${id}`, { method: "PUT", body: JSON.stringify({ status }) });
+}
+
+// ─── Case Notes ───
+export async function getCaseNotes(referralId: string) {
+  return apiFetch(`/api/referrals/${referralId}/notes`);
+}
+
+export async function addCaseNote(referralId: string, partnerId: string, author: string, content: string, type: string) {
+  return apiFetch(`/api/referrals/${referralId}/notes`, {
+    method: "POST",
+    body: JSON.stringify({ partnerId, author, content, type }),
+  });
+}
+
+// ─── Copilot ───
 export async function sendCopilotMessage(message: string) {
   return apiFetch("/api/copilot", { method: "POST", body: JSON.stringify({ message }) });
 }
 
-// Handoff
-export async function getHandoffs() {
+// ─── Handoff ───
+export async function getActiveHandoffs() {
   return apiFetch("/api/handoffs");
 }
 
-export async function createHandoff(data: Record<string, unknown>) {
-  return apiFetch("/api/handoffs", { method: "POST", body: JSON.stringify(data) });
+export async function startHandoff(survivorId: string, caseworkerName: string) {
+  return apiFetch("/api/handoffs", { method: "POST", body: JSON.stringify({ survivorId, caseworkerName }) });
 }
 
-// Meetings
+export async function endHandoff(survivorId: string) {
+  return apiFetch(`/api/handoffs/${survivorId}`, { method: "DELETE" });
+}
+
+export async function getHandoffMessages(survivorId: string) {
+  return apiFetch(`/api/handoffs/${survivorId}/messages`);
+}
+
+export async function sendHandoffMessage(survivorId: string, phone: string, message: string, caseworkerName: string) {
+  return apiFetch(`/api/handoffs/${survivorId}/messages`, {
+    method: "POST",
+    body: JSON.stringify({ phone, message, caseworkerName }),
+  });
+}
+
+export async function sendTypingIndicator(survivorId: string) {
+  return apiFetch(`/api/handoffs/${survivorId}/typing`, { method: "POST" });
+}
+
+export async function clearTypingIndicator(survivorId: string) {
+  return apiFetch(`/api/handoffs/${survivorId}/typing`, { method: "DELETE" });
+}
+
+export async function markMessageRead(survivorId: string, messageId: string) {
+  return apiFetch(`/api/handoffs/${survivorId}/messages/${messageId}/read`, { method: "POST" });
+}
+
+export async function getPresence(survivorId: string) {
+  return apiFetch(`/api/handoffs/${survivorId}/presence`);
+}
+
+// ─── Meetings ───
 export async function getMeetings() {
   return apiFetch("/api/meetings");
 }
 
-export async function createMeeting(data: Record<string, unknown>) {
+export async function createMeeting(data: { title: string; type: string; date: string; attendees: string[]; notes?: string; caseId?: string }) {
   return apiFetch("/api/meetings", { method: "POST", body: JSON.stringify(data) });
 }
 
-// Services
+export async function getSafeWindow(survivorId: string) {
+  return apiFetch(`/api/survivors/${survivorId}/safe-window`);
+}
+
+export async function setSafeWindow(survivorId: string, windows: { day: string; startHour: number; endHour: number }[]) {
+  return apiFetch(`/api/survivors/${survivorId}/safe-window`, { method: "PUT", body: JSON.stringify({ windows }) });
+}
+
+// ─── Services ───
 export async function getServices() {
   return apiFetch("/api/services");
 }
 
-// Analytics
+// ─── Analytics ───
 export async function getAnalytics() {
   return apiFetch("/api/analytics");
 }
 
-// Settings
+// ─── Settings ───
 export async function getSettings() {
   return apiFetch("/api/settings");
 }
@@ -95,7 +165,7 @@ export async function updateSettings(data: Record<string, unknown>) {
   return apiFetch("/api/settings", { method: "PUT", body: JSON.stringify(data) });
 }
 
-// Admin
+// ─── Admin ───
 export async function getStats() {
   return apiFetch("/api/admin/stats");
 }
@@ -116,6 +186,10 @@ export async function getAdminUsers() {
   return apiFetch("/api/admin/users");
 }
 
+export async function updateAdminUser(userId: string, data: Record<string, unknown>) {
+  return apiFetch(`/api/admin/users/${userId}`, { method: "PUT", body: JSON.stringify(data) });
+}
+
 export async function getAdminPrompts() {
   return apiFetch("/api/admin/prompts");
 }
@@ -128,8 +202,21 @@ export async function getAdminReviews() {
   return apiFetch("/api/admin/reviews");
 }
 
-export async function getAuditLog() {
-  return apiFetch("/api/admin/audit");
+export async function updateReview(id: string, data: Record<string, unknown>) {
+  return apiFetch(`/api/admin/reviews/${id}`, { method: "PUT", body: JSON.stringify(data) });
 }
 
-export { getTenant, getToken };
+export async function getAuditLog(params?: { search?: string; user?: string; action?: string; from?: string; to?: string }) {
+  const query = new URLSearchParams();
+  if (params?.search) query.set("search", params.search);
+  if (params?.user) query.set("user", params.user);
+  if (params?.action) query.set("action", params.action);
+  if (params?.from) query.set("from", params.from);
+  if (params?.to) query.set("to", params.to);
+  const qs = query.toString();
+  return apiFetch(`/api/admin/audit${qs ? `?${qs}` : ""}`);
+}
+
+// Legacy exports for backwards compatibility
+export const getHandoffs = getActiveHandoffs;
+export const createHandoff = startHandoff;
