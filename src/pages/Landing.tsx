@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 import {
   Shield,
   Heart,
@@ -12,6 +13,7 @@ import {
   ArrowRight,
   X,
   CheckCircle2,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -22,12 +24,12 @@ const quickExit = () => {
 };
 
 const helpCards = [
-  { icon: Shield, title: "Safety planning", description: "Personalised plans to keep you and your family safe at home, online, and when leaving.", color: "from-blue-500/10 to-blue-600/5" },
-  { icon: Globe, title: "Local services", description: "We connect you with refuges, outreach workers, and support services near you.", color: "from-teal-500/10 to-teal-600/5" },
-  { icon: Scale, title: "Legal rights", description: "Understand your rights around injunctions, child custody, housing, and immigration.", color: "from-amber-500/10 to-amber-600/5" },
-  { icon: HandHeart, title: "Emotional support", description: "A compassionate, trained advisor who listens without judgement — at your pace.", color: "from-rose-500/10 to-rose-600/5" },
-  { icon: Baby, title: "Children's safety", description: "Guidance on safeguarding children and accessing specialist family support.", color: "from-purple-500/10 to-purple-600/5" },
-  { icon: Lock, title: "Completely private", description: "End-to-end encrypted WhatsApp chat. We never share your information without consent.", color: "from-emerald-500/10 to-emerald-600/5" },
+  { icon: Shield, title: "Safety planning", description: "Personalised safety plans based on your situation — whether you're planning to leave or staying for now.", color: "from-blue-500/10 to-blue-600/5" },
+  { icon: MapPin, title: "Local services", description: "We find refuges, helplines, and support services near you. Over 200 services across the UK.", color: "from-teal-500/10 to-teal-600/5" },
+  { icon: Scale, title: "Legal rights", description: "Non-molestation orders, Clare's Law, coercive control — your options explained in plain language.", color: "from-amber-500/10 to-amber-600/5" },
+  { icon: HandHeart, title: "Emotional support", description: "Sometimes you just need someone to listen. We're here, without judgement, whenever you need us.", color: "from-rose-500/10 to-rose-600/5" },
+  { icon: Baby, title: "Children's safety", description: "Guidance on keeping your children safe, school arrangements, and children's services.", color: "from-purple-500/10 to-purple-600/5" },
+  { icon: Lock, title: "Completely private", description: "No app to download. No trace on your phone. Your messages are encrypted and auto-deleted after 30 days.", color: "from-emerald-500/10 to-emerald-600/5" },
 ];
 
 const iconColors = [
@@ -54,6 +56,15 @@ const emergencyContacts = [
 ];
 
 const Landing = () => {
+  // Escape key quick exit
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") quickExit();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white text-foreground">
       {/* Quick Exit Button */}
@@ -63,15 +74,15 @@ const Landing = () => {
         aria-label="Quick exit — leaves this site immediately"
       >
         <X className="h-4 w-4" strokeWidth={3} />
-        Quick Exit
+        Exit Site
       </button>
 
       {/* Safety Banner */}
-      <div className="bg-slate-800 text-slate-200 px-4 py-3 text-center text-sm">
+      <div className="bg-slate-800 text-slate-200 px-4 py-3 text-center text-sm leading-relaxed">
         <Shield className="inline h-4 w-4 mr-1.5 -mt-0.5 text-slate-400" />
-        Your safety comes first. Use a{" "}
-        <strong className="text-white">private / incognito window</strong>{" "}
-        and clear your browser history after visiting.
+        Your safety comes first. If someone may check your browsing history, use a{" "}
+        <strong className="text-white">private / incognito window</strong>.
+        The "Exit Site" button takes you to BBC Weather instantly.
       </div>
 
       {/* Hero */}
@@ -92,8 +103,8 @@ const Landing = () => {
             </span>
           </h1>
           <p className="mt-6 text-lg sm:text-xl text-slate-600 max-w-xl mx-auto leading-relaxed">
-            Free, confidential support via WhatsApp — from trained advisors who
-            understand domestic abuse. Available in your language, on your terms.
+            Free, confidential support via WhatsApp — immediate help when you
+            need it, in your language, on your terms.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
@@ -102,30 +113,24 @@ const Landing = () => {
                 className="bg-emerald-600 hover:bg-emerald-700 text-white text-base px-8 py-6 rounded-2xl shadow-lg shadow-emerald-600/25 hover:shadow-emerald-700/30 transition-all hover:-translate-y-0.5"
               >
                 <MessageCircle className="h-5 w-5 mr-2" />
-                Chat on WhatsApp
+                Message us on WhatsApp
               </Button>
             </a>
           </div>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-500">
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald-500" /> It's free
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald-500" /> End-to-end encrypted
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald-500" /> No app download needed
-            </span>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-2 text-sm text-slate-500">
+            <span>Available 24/7</span>
+            <span>·</span>
+            <span>Free</span>
+            <span>·</span>
+            <span>Confidential</span>
+            <span>·</span>
+            <span>11 languages</span>
           </div>
+          <p className="mt-4 text-sm font-medium text-slate-700">
+            No app to download. No trace on your phone. Messages are encrypted.
+          </p>
         </div>
       </section>
-
-      {/* Privacy Reassurance */}
-      <div className="bg-slate-900 text-white text-center px-6 py-5">
-        <p className="text-base sm:text-lg font-medium tracking-wide">
-          No app to download. No trace on your phone. Messages are encrypted.
-        </p>
-      </div>
 
       {/* How We Help */}
       <section className="max-w-6xl mx-auto px-6 py-20 sm:py-24">
@@ -246,7 +251,7 @@ const Landing = () => {
         </h2>
         <p className="mt-4 text-slate-600 max-w-lg mx-auto">
           Partner with SafeVoice to give your service users instant, multilingual
-          domestic abuse support powered by AI.
+          domestic abuse support.
         </p>
         <Link to="/partners">
           <Button
@@ -254,7 +259,7 @@ const Landing = () => {
             size="lg"
             className="mt-8 rounded-xl border-slate-300 text-slate-700 hover:bg-slate-50 px-8"
           >
-            Learn more
+            Partner Portal
             <ArrowRight className="h-4 w-4 ml-1" />
           </Button>
         </Link>
@@ -262,16 +267,30 @@ const Landing = () => {
 
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-slate-50">
-        <div className="max-w-4xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-          <span>© {new Date().getFullYear()} SafeVoice. All rights reserved.</span>
-          <div className="flex gap-6">
+        <div className="max-w-4xl mx-auto px-6 py-8 text-center space-y-3">
+          <p className="text-sm text-slate-600">
+            SafeVoice is a free service. We are not a substitute for emergency services.
+            <br />
+            If you are in immediate danger, call{" "}
+            <a href="tel:999" className="font-semibold text-slate-900 hover:underline">
+              999
+            </a>
+            .
+          </p>
+          <div className="flex items-center justify-center gap-6 text-sm text-slate-500">
             <a href="/privacy" className="hover:text-slate-900 transition-colors">
               Privacy Policy
             </a>
             <a href="/terms" className="hover:text-slate-900 transition-colors">
-              Terms of Use
+              Terms
+            </a>
+            <a href="/contact" className="hover:text-slate-900 transition-colors">
+              Contact
             </a>
           </div>
+          <p className="text-xs text-slate-400">
+            © {new Date().getFullYear()} SafeVoice
+          </p>
         </div>
       </footer>
     </div>
