@@ -60,7 +60,6 @@ export async function register(payload: {
     signal: controller.signal,
   });
   clearTimeout(timeout);
-  });
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ message: "Registration failed" }));
