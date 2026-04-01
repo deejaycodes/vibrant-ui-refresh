@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { login } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
-import QuickExit from "@/components/QuickExit";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
