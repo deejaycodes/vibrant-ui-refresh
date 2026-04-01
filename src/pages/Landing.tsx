@@ -38,8 +38,8 @@ const iconColors = [
 const steps = [
   { step: 1, title: "Open WhatsApp", description: "Tap the green button to start a confidential chat." },
   { step: 2, title: "Tell us what you need", description: "Share as much or as little as you're comfortable with." },
-  { step: 3, title: "Get matched with support", description: "Our AI copilot finds the right local services for you." },
-  { step: 4, title: "Receive ongoing help", description: "Your advisor follows up to make sure you're safe." },
+  { step: 3, title: "Get matched with support", description: "We find the right local services for your situation." },
+  { step: 4, title: "Receive ongoing help", description: "We follow up to make sure you're safe." },
 ];
 
 const languages = [
@@ -120,6 +120,13 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* Privacy Reassurance */}
+      <div className="bg-slate-900 text-white text-center px-6 py-5">
+        <p className="text-base sm:text-lg font-medium tracking-wide">
+          No app to download. No trace on your phone. Messages are encrypted.
+        </p>
+      </div>
+
       {/* How We Help */}
       <section className="max-w-6xl mx-auto px-6 py-20 sm:py-24">
         <div className="text-center mb-14">
@@ -188,7 +195,7 @@ const Landing = () => {
           Support in your language
         </h2>
         <p className="mt-4 text-slate-600">
-          Our advisors can help you in any of these languages.
+          We can help you in any of these languages.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-2.5">
           {languages.map((lang) => (
@@ -241,7 +248,7 @@ const Landing = () => {
           Partner with SafeVoice to give your service users instant, multilingual
           domestic abuse support powered by AI.
         </p>
-        <Link to="/">
+        <Link to="/register">
           <Button
             variant="outline"
             size="lg"
