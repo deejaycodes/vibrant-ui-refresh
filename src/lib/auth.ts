@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || "https://api.safevoice.org";
+const API_BASE = "https://api.safevoice.org";
 
 export function getToken(): string | null {
   return localStorage.getItem("safevoice_token");
