@@ -30,7 +30,7 @@ const trustIndicators = [
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <QuickExit />
+      
 
       {/* Header */}
       <header className="border-b bg-card">

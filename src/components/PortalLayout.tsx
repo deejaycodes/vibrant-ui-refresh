@@ -20,7 +20,7 @@ const PortalLayout = ({ children }: PortalLayoutProps) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <QuickExit />
+      
       <header className="border-b bg-card">
         <div className="container flex items-center justify-between h-14">
           <div className="flex items-center gap-6">
