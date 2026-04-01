@@ -51,9 +51,6 @@ async function apiFetch(path: string, options: RequestInit = {}) {
     return res.json();
   } catch (err) {
     clearTimeout(timeout);
-    if (isDemoMode()) {
-      return getDemoFallback(path, options.method);
-    }
     throw err;
   }
 }
