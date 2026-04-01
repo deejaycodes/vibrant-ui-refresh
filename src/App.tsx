@@ -5,13 +5,14 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import Index from "./pages/Index";
-import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import Offline from "./pages/Offline";
 
 import Referrals from "./pages/dashboard/Referrals";
+import ReferralDetail from "./pages/dashboard/ReferralDetail";
 import Copilot from "./pages/dashboard/Copilot";
 import Handoff from "./pages/dashboard/Handoff";
 import Meetings from "./pages/dashboard/Meetings";
@@ -35,10 +36,10 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/referrals" element={<Referrals />} />
+          <Route path="/dashboard/referrals/:id" element={<ReferralDetail />} />
           <Route path="/dashboard/copilot" element={<Copilot />} />
           <Route path="/dashboard/handoff" element={<Handoff />} />
           <Route path="/dashboard/meetings" element={<Meetings />} />
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="/admin/prompts" element={<AdminPrompts />} />
           <Route path="/admin/reviews" element={<AdminReviews />} />
           <Route path="/admin/audit" element={<AdminAudit />} />
+          <Route path="/offline" element={<Offline />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
