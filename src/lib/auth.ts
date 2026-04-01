@@ -71,6 +71,6 @@ export async function register(payload: {
 
 export function logout() {
   clearToken();
-  localStorage.removeItem("safevoice_demo");
+  
   window.location.href = "/";
 }
