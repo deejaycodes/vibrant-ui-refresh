@@ -89,6 +89,7 @@ const dashboardFeatures = [
 ];
 
 const Partners = () => {
+  useEffect(() => { window.scrollTo(0, 0); }, []);
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white text-foreground">
       {/* Hero */}
