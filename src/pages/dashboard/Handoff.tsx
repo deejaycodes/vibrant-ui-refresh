@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { UserCheck, Plus } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Plus } from "lucide-react";
 import PortalLayout from "@/components/PortalLayout";
 import { getHandoffs } from "@/lib/api";
+import { toast } from "sonner";
 
 interface Handoff {
   id: string;
@@ -16,9 +22,15 @@ interface Handoff {
   date: string;
 }
 
+const MOCK_WORKERS = ["Sarah K.", "James M.", "Lisa P.", "Dr. Patel", "Anna R."];
+
 const Handoff = () => {
   const [handoffs, setHandoffs] = useState<Handoff[]>([]);
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [caseId, setCaseId] = useState("");
+  const [toWorker, setToWorker] = useState("");
+  const [notes, setNotes] = useState("");
 
   useEffect(() => {
     getHandoffs()
@@ -33,6 +45,27 @@ const Handoff = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  const handleSubmit = () => {
+    if (!caseId || !toWorker) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+    const newHandoff: Handoff = {
+      id: `H-${String(handoffs.length + 1).padStart(3, "0")}`,
+      caseId,
+      fromWorker: "You",
+      toWorker,
+      status: "Pending",
+      date: new Date().toISOString().split("T")[0],
+    };
+    setHandoffs((prev) => [newHandoff, ...prev]);
+    toast.success("Handoff created successfully.");
+    setCaseId("");
+    setToWorker("");
+    setNotes("");
+    setOpen(false);
+  };
+
   return (
     <PortalLayout>
       <div className="space-y-6 max-w-6xl">
@@ -41,7 +74,44 @@ const Handoff = () => {
             <h1 className="text-2xl font-semibold tracking-tight">Case Handoff</h1>
             <p className="text-sm text-muted-foreground mt-1">Transfer cases to human caseworkers</p>
           </div>
-          <Button className="gap-2"><Plus className="h-4 w-4" />New Handoff</Button>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button className="gap-2"><Plus className="h-4 w-4" />New Handoff</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>New Case Handoff</DialogTitle>
+                <DialogDescription>Transfer a case to another caseworker.</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-2">
+                <div className="space-y-2">
+                  <Label htmlFor="handoff-case">Case ID *</Label>
+                  <Input id="handoff-case" placeholder="e.g. R-001" value={caseId} onChange={(e) => setCaseId(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="handoff-to">Assign to *</Label>
+                  <Select value={toWorker} onValueChange={setToWorker}>
+                    <SelectTrigger id="handoff-to">
+                      <SelectValue placeholder="Select caseworker" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {MOCK_WORKERS.map((w) => (
+                        <SelectItem key={w} value={w}>{w}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="handoff-notes">Notes</Label>
+                  <Textarea id="handoff-notes" placeholder="Any context for the receiving worker…" value={notes} onChange={(e) => setNotes(e.target.value)} />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+                <Button onClick={handleSubmit}>Create Handoff</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
         <Card className="shadow-sm">
           <CardContent className="pt-6">
