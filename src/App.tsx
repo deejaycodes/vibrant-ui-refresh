@@ -12,6 +12,7 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import Offline from "./pages/Offline";
 import Landing from "./pages/Landing";
+import Partners from "./pages/Partners";
 
 import Referrals from "./pages/dashboard/Referrals";
 import ReferralDetail from "./pages/dashboard/ReferralDetail";
