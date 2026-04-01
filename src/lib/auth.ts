@@ -22,11 +22,16 @@ export function handleAuthError() {
 }
 
 export async function login(email: string, password: string) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+
   const res = await fetch(`${API_BASE}/api/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
+    signal: controller.signal,
   });
+  clearTimeout(timeout);
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ message: "Login failed" }));
