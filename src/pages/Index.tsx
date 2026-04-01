@@ -53,6 +53,21 @@ const Login = () => {
               {loading ? "Signing in…" : "Sign In"}
             </Button>
           </form>
+          <div className="relative my-4">
+            <Separator />
+            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">or</span>
+          </div>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => {
+              setToken("demo-token");
+              localStorage.setItem("safevoice_demo", "true");
+              navigate("/dashboard");
+            }}
+          >
+            Enter Demo Mode
+          </Button>
           <p className="text-center text-sm text-muted-foreground mt-4">
             New organisation?{" "}
             <Link to="/register" className="text-primary font-medium hover:underline">Register</Link>
