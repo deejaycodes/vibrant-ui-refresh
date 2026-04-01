@@ -22,7 +22,11 @@ async function apiFetch(path: string, options: RequestInit = {}) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+
+  const res = await fetch(`${API_BASE}${path}`, { ...options, headers, signal: controller.signal });
+  clearTimeout(timeout);
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ message: res.statusText }));
