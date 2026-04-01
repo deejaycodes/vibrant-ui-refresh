@@ -5,7 +5,7 @@ import {
   demoAdminReviews, demoAuditLog,
 } from "./demo-data";
 
-const API_BASE = import.meta.env.VITE_API_URL || "https://api.safevoice.org";
+const API_BASE = "https://api.safevoice.org";
 
 export function getTenant(): string {
   return localStorage.getItem("safevoice_tenant") || "uk";
