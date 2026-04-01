@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UserPlus } from "lucide-react";
 import PortalLayout from "@/components/PortalLayout";
+import { TableSkeleton } from "@/components/Skeletons";
 import { getAdminUsers } from "@/lib/api";
 
 interface UserRecord {
@@ -47,25 +48,29 @@ const AdminUsers = () => {
         </div>
         <Card className="shadow-sm">
           <CardContent className="pt-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Role</TableHead><TableHead>Organisation</TableHead><TableHead>Status</TableHead><TableHead>Last Active</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {users.map((u) => (
-                  <TableRow key={u.id}>
-                    <TableCell className="font-medium">{u.name}</TableCell>
-                    <TableCell className="text-sm">{u.email}</TableCell>
-                    <TableCell><Badge variant="secondary">{u.role}</Badge></TableCell>
-                    <TableCell className="text-sm">{u.org}</TableCell>
-                    <TableCell><Badge variant={u.status === "Active" ? "default" : "secondary"} className={u.status === "Active" ? "bg-success text-success-foreground border-transparent" : ""}>{u.status}</Badge></TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{u.lastActive}</TableCell>
+            {loading ? (
+              <TableSkeleton columns={6} rows={4} />
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Role</TableHead><TableHead>Organisation</TableHead><TableHead>Status</TableHead><TableHead>Last Active</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {users.map((u) => (
+                    <TableRow key={u.id}>
+                      <TableCell className="font-medium">{u.name}</TableCell>
+                      <TableCell className="text-sm">{u.email}</TableCell>
+                      <TableCell><Badge variant="secondary">{u.role}</Badge></TableCell>
+                      <TableCell className="text-sm">{u.org}</TableCell>
+                      <TableCell><Badge variant={u.status === "Active" ? "default" : "secondary"} className={u.status === "Active" ? "bg-success text-success-foreground border-transparent" : ""}>{u.status}</Badge></TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{u.lastActive}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
         </Card>
       </div>

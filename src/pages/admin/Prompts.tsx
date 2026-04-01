@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Save } from "lucide-react";
 import PortalLayout from "@/components/PortalLayout";
+import { FormSkeleton } from "@/components/Skeletons";
 import { getAdminPrompts, updatePrompt } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 
@@ -51,7 +52,11 @@ const AdminPrompts = () => {
           <p className="text-sm text-muted-foreground mt-1">Manage AI system prompts and templates</p>
         </div>
         {loading ? (
-          <p className="text-sm text-muted-foreground">Loading…</p>
+          <>
+            <FormSkeleton />
+            <FormSkeleton />
+            <FormSkeleton />
+          </>
         ) : (
           prompts.map((p) => (
             <Card key={p.id} className="shadow-sm">

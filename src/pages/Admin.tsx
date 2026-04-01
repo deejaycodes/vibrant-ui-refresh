@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import PortalLayout from "@/components/PortalLayout";
 import StatCard from "@/components/StatCard";
+import { StatCardSkeleton, TableSkeleton } from "@/components/Skeletons";
 import { getStats, getHealthCheck, getGenerations, runCron } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 
@@ -57,12 +58,18 @@ const Admin = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <StatCard title="Survivors" value={stats?.survivors ?? "—"} icon={Users} />
-          <StatCard title="Active Conversations" value={stats?.activeConversations ?? "—"} icon={MessageSquare} />
-          <StatCard title="Reports" value={stats?.reports ?? "—"} icon={FileText} />
-          <StatCard title="Referrals" value={stats?.referrals ?? "—"} icon={ArrowRightLeft} />
-          <StatCard title="Messages" value={stats?.messages ?? "—"} icon={Cpu} />
-          <StatCard title="AI Cost" value={stats?.cost ?? "—"} icon={DollarSign} />
+          {loading ? (
+            Array.from({ length: 6 }).map((_, i) => <StatCardSkeleton key={i} />)
+          ) : (
+            <>
+              <StatCard title="Survivors" value={stats?.survivors ?? "—"} icon={Users} />
+              <StatCard title="Active Conversations" value={stats?.activeConversations ?? "—"} icon={MessageSquare} />
+              <StatCard title="Reports" value={stats?.reports ?? "—"} icon={FileText} />
+              <StatCard title="Referrals" value={stats?.referrals ?? "—"} icon={ArrowRightLeft} />
+              <StatCard title="Messages" value={stats?.messages ?? "—"} icon={Cpu} />
+              <StatCard title="AI Cost" value={stats?.cost ?? "—"} icon={DollarSign} />
+            </>
+          )}
         </div>
 
         <div className="flex gap-3">
@@ -73,24 +80,28 @@ const Admin = () => {
         <Card className="shadow-sm">
           <CardHeader className="pb-3"><CardTitle className="text-base font-medium">AI Generations Log</CardTitle></CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead><TableHead>Model</TableHead><TableHead>Tokens</TableHead><TableHead>Cost</TableHead><TableHead>Timestamp</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {generations.map((g: any) => (
-                  <TableRow key={g.id}>
-                    <TableCell className="font-mono text-xs">{g.id}</TableCell>
-                    <TableCell><Badge variant="secondary">{g.model}</Badge></TableCell>
-                    <TableCell>{g.tokens?.toLocaleString()}</TableCell>
-                    <TableCell>{g.cost}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{g.timestamp}</TableCell>
+            {loading ? (
+              <TableSkeleton columns={5} rows={3} />
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead><TableHead>Model</TableHead><TableHead>Tokens</TableHead><TableHead>Cost</TableHead><TableHead>Timestamp</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {generations.map((g: any) => (
+                    <TableRow key={g.id}>
+                      <TableCell className="font-mono text-xs">{g.id}</TableCell>
+                      <TableCell><Badge variant="secondary">{g.model}</Badge></TableCell>
+                      <TableCell>{g.tokens?.toLocaleString()}</TableCell>
+                      <TableCell>{g.cost}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{g.timestamp}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
         </Card>
       </div>

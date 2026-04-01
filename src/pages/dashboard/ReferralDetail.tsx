@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, User, MapPin, Phone, Calendar, FileText, AlertTriangle } from "lucide-react";
 import PortalLayout from "@/components/PortalLayout";
 import RiskBadge from "@/components/RiskBadge";
+import { DetailSkeleton } from "@/components/Skeletons";
 import { getReferralDetail } from "@/lib/api";
 
-interface ReferralDetail {
+interface ReferralDetailData {
   id: string;
   caseId: string;
   service: string;
@@ -25,7 +26,7 @@ interface ReferralDetail {
 
 const ReferralDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [referral, setReferral] = useState<ReferralDetail | null>(null);
+  const [referral, setReferral] = useState<ReferralDetailData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -57,7 +58,7 @@ const ReferralDetailPage = () => {
   if (loading) {
     return (
       <PortalLayout>
-        <p className="text-sm text-muted-foreground">Loading…</p>
+        <DetailSkeleton />
       </PortalLayout>
     );
   }
@@ -86,7 +87,6 @@ const ReferralDetailPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main info */}
           <div className="lg:col-span-2 space-y-6">
             <Card className="shadow-sm">
               <CardHeader className="pb-3">
@@ -149,7 +149,6 @@ const ReferralDetailPage = () => {
             </Card>
           </div>
 
-          {/* Sidebar - service info */}
           <div className="space-y-6">
             <Card className="shadow-sm">
               <CardHeader className="pb-3">

@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
 import PortalLayout from "@/components/PortalLayout";
+import { TableSkeleton } from "@/components/Skeletons";
 import { getHandoffs } from "@/lib/api";
 import { toast } from "sonner";
 
@@ -116,7 +117,7 @@ const Handoff = () => {
         <Card className="shadow-sm">
           <CardContent className="pt-6">
             {loading ? (
-              <p className="text-sm text-muted-foreground">Loading…</p>
+              <TableSkeleton columns={6} rows={3} />
             ) : (
               <Table>
                 <TableHeader>

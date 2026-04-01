@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -13,6 +12,7 @@ import { Plus, Clock, CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import PortalLayout from "@/components/PortalLayout";
+import { TableSkeleton } from "@/components/Skeletons";
 import { getMeetings } from "@/lib/api";
 import { toast } from "sonner";
 
@@ -138,7 +138,7 @@ const Meetings = () => {
         <Card className="shadow-sm">
           <CardContent className="pt-6">
             {loading ? (
-              <p className="text-sm text-muted-foreground">Loading…</p>
+              <TableSkeleton columns={5} rows={3} />
             ) : (
               <Table>
                 <TableHeader>

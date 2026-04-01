@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle } from "lucide-react";
 import PortalLayout from "@/components/PortalLayout";
 import RiskBadge from "@/components/RiskBadge";
+import { TableSkeleton } from "@/components/Skeletons";
 import { getAdminReviews } from "@/lib/api";
 
 interface Review {
@@ -44,31 +44,35 @@ const AdminReviews = () => {
         </div>
         <Card className="shadow-sm">
           <CardContent className="pt-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Review ID</TableHead><TableHead>Case</TableHead><TableHead>AI Risk</TableHead><TableHead>Human Assessment</TableHead><TableHead>Reviewer</TableHead><TableHead>Status</TableHead><TableHead>Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {reviews.map((r) => (
-                  <TableRow key={r.id}>
-                    <TableCell className="font-mono text-xs">{r.id}</TableCell>
-                    <TableCell className="font-mono text-xs">{r.caseId}</TableCell>
-                    <TableCell><RiskBadge level={r.aiRisk} /></TableCell>
-                    <TableCell className="text-sm">{r.humanRisk}</TableCell>
-                    <TableCell className="text-sm">{r.reviewer}</TableCell>
-                    <TableCell>
-                      <Badge variant={r.status === "Reviewed" ? "default" : "secondary"} className={r.status === "Reviewed" ? "bg-success text-success-foreground border-transparent" : ""}>
-                        {r.status === "Reviewed" ? <CheckCircle className="h-3 w-3 mr-1" /> : <XCircle className="h-3 w-3 mr-1" />}
-                        {r.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{r.date}</TableCell>
+            {loading ? (
+              <TableSkeleton columns={7} rows={3} />
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Review ID</TableHead><TableHead>Case</TableHead><TableHead>AI Risk</TableHead><TableHead>Human Assessment</TableHead><TableHead>Reviewer</TableHead><TableHead>Status</TableHead><TableHead>Date</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {reviews.map((r) => (
+                    <TableRow key={r.id}>
+                      <TableCell className="font-mono text-xs">{r.id}</TableCell>
+                      <TableCell className="font-mono text-xs">{r.caseId}</TableCell>
+                      <TableCell><RiskBadge level={r.aiRisk} /></TableCell>
+                      <TableCell className="text-sm">{r.humanRisk}</TableCell>
+                      <TableCell className="text-sm">{r.reviewer}</TableCell>
+                      <TableCell>
+                        <Badge variant={r.status === "Reviewed" ? "default" : "secondary"} className={r.status === "Reviewed" ? "bg-success text-success-foreground border-transparent" : ""}>
+                          {r.status === "Reviewed" ? <CheckCircle className="h-3 w-3 mr-1" /> : <XCircle className="h-3 w-3 mr-1" />}
+                          {r.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{r.date}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
         </Card>
       </div>
