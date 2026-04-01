@@ -7,14 +7,10 @@ import {
   BarChart3,
   Globe,
   Users,
-  Clock,
   Bot,
-  FileText,
   ArrowRight,
   CheckCircle2,
-  Headphones,
   Lock,
-  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
