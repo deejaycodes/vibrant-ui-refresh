@@ -62,28 +62,6 @@ const benefits = [
   "No hardware or IT infrastructure required",
 ];
 
-const dashboardFeatures = [
-  {
-    icon: Headphones,
-    title: "Live case dashboard",
-    description: "See all active cases, risk levels, and next actions at a glance.",
-  },
-  {
-    icon: Zap,
-    title: "Smart copilot",
-    description: "AI suggests local services, drafts safety plans, and flags high-risk cases.",
-  },
-  {
-    icon: FileText,
-    title: "Automated reporting",
-    description: "One-click reports for funders, commissioners, and internal reviews.",
-  },
-  {
-    icon: Clock,
-    title: "Follow-up scheduling",
-    description: "Never miss a check-in. Automated reminders keep survivors supported.",
-  },
-];
 
 const Partners = () => {
   useEffect(() => { window.scrollTo(0, 0); }, []);
