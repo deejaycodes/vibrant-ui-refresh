@@ -50,10 +50,16 @@ export async function register(payload: {
   phone: string;
   password: string;
 }) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+
   const res = await fetch(`${API_BASE}/api/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
+    signal: controller.signal,
+  });
+  clearTimeout(timeout);
   });
 
   if (!res.ok) {
