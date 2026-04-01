@@ -51,7 +51,7 @@ export function AppSidebar() {
           )}
         </div>
 
-        <SidebarGroup open={isDashboard || (!isAdmin)} defaultOpen>
+        <SidebarGroup defaultOpen>
           <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
