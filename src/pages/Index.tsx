@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { login } from "@/lib/auth";
+import { Separator } from "@/components/ui/separator";
+import { login, setToken } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { Shield } from "lucide-react";
 
