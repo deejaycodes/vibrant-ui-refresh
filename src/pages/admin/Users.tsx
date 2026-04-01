@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { UserPlus } from "lucide-react";
 import PortalLayout from "@/components/PortalLayout";
 import { TableSkeleton } from "@/components/Skeletons";
-import { getAdminUsers } from "@/lib/api";
+import { getAdminUsers, updateAdminUser } from "@/lib/api";
+import { toast } from "sonner";
 
 interface UserRecord {
   id: string;
@@ -22,19 +23,26 @@ const AdminUsers = () => {
   const [users, setUsers] = useState<UserRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchUsers = () => {
+    setLoading(true);
     getAdminUsers()
       .then((data) => setUsers(data?.users || []))
-      .catch(() => {
-        setUsers([
-          { id: "U-001", name: "Sarah K.", email: "sarah@womensaid.org", role: "Caseworker", org: "Women's Aid", status: "Active", lastActive: "2025-03-28" },
-          { id: "U-002", name: "James M.", email: "james@refuge.org", role: "Manager", org: "Refuge", status: "Active", lastActive: "2025-03-28" },
-          { id: "U-003", name: "Lisa P.", email: "lisa@mind.org", role: "Caseworker", org: "MIND", status: "Active", lastActive: "2025-03-27" },
-          { id: "U-004", name: "Dr. Patel", email: "patel@nhs.uk", role: "Reviewer", org: "NHS Trust", status: "Inactive", lastActive: "2025-03-20" },
-        ]);
-      })
+      .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  };
+
+  useEffect(() => { fetchUsers(); }, []);
+
+  const toggleStatus = async (user: UserRecord) => {
+    const newStatus = user.status === "Active" ? "Inactive" : "Active";
+    try {
+      await updateAdminUser(user.id, { status: newStatus });
+      toast.success(`${user.name} ${newStatus === "Active" ? "activated" : "deactivated"}`);
+      fetchUsers();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update user");
+    }
+  };
 
   return (
     <PortalLayout>
@@ -49,12 +57,12 @@ const AdminUsers = () => {
         <Card className="shadow-sm">
           <CardContent className="pt-6">
             {loading ? (
-              <TableSkeleton columns={6} rows={4} />
+              <TableSkeleton columns={7} rows={4} />
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Role</TableHead><TableHead>Organisation</TableHead><TableHead>Status</TableHead><TableHead>Last Active</TableHead>
+                    <TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Role</TableHead><TableHead>Organisation</TableHead><TableHead>Status</TableHead><TableHead>Last Active</TableHead><TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -66,6 +74,11 @@ const AdminUsers = () => {
                       <TableCell className="text-sm">{u.org}</TableCell>
                       <TableCell><Badge variant={u.status === "Active" ? "default" : "secondary"} className={u.status === "Active" ? "bg-success text-success-foreground border-transparent" : ""}>{u.status}</Badge></TableCell>
                       <TableCell className="text-sm text-muted-foreground">{u.lastActive}</TableCell>
+                      <TableCell>
+                        <Button variant="outline" size="sm" onClick={() => toggleStatus(u)}>
+                          {u.status === "Active" ? "Deactivate" : "Activate"}
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

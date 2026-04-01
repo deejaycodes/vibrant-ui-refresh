@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, XCircle, ThumbsUp, ThumbsDown } from "lucide-react";
 import PortalLayout from "@/components/PortalLayout";
 import RiskBadge from "@/components/RiskBadge";
 import { TableSkeleton } from "@/components/Skeletons";
-import { getAdminReviews } from "@/lib/api";
+import { getAdminReviews, updateReview } from "@/lib/api";
+import { toast } from "sonner";
 
 interface Review {
   id: string;
@@ -22,18 +24,25 @@ const AdminReviews = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchReviews = () => {
+    setLoading(true);
     getAdminReviews()
       .then((data) => setReviews(data?.reviews || []))
-      .catch(() => {
-        setReviews([
-          { id: "RV-001", caseId: "R-001", aiRisk: "critical", humanRisk: "Agreed", reviewer: "Dr. Patel", status: "Reviewed", date: "2025-03-28" },
-          { id: "RV-002", caseId: "R-002", aiRisk: "high", humanRisk: "Downgraded to Medium", reviewer: "Sarah K.", status: "Reviewed", date: "2025-03-27" },
-          { id: "RV-003", caseId: "R-005", aiRisk: "high", humanRisk: "Pending", reviewer: "—", status: "Pending", date: "2025-03-24" },
-        ]);
-      })
+      .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  };
+
+  useEffect(() => { fetchReviews(); }, []);
+
+  const handleAction = async (id: string, action: "approved" | "rejected") => {
+    try {
+      await updateReview(id, { status: action });
+      toast.success(`Review ${action}`);
+      fetchReviews();
+    } catch (err: any) {
+      toast.error(err.message || "Action failed");
+    }
+  };
 
   return (
     <PortalLayout>
@@ -45,12 +54,12 @@ const AdminReviews = () => {
         <Card className="shadow-sm">
           <CardContent className="pt-6">
             {loading ? (
-              <TableSkeleton columns={7} rows={3} />
+              <TableSkeleton columns={8} rows={3} />
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Review ID</TableHead><TableHead>Case</TableHead><TableHead>AI Risk</TableHead><TableHead>Human Assessment</TableHead><TableHead>Reviewer</TableHead><TableHead>Status</TableHead><TableHead>Date</TableHead>
+                    <TableHead>Review ID</TableHead><TableHead>Case</TableHead><TableHead>AI Risk</TableHead><TableHead>Human Assessment</TableHead><TableHead>Reviewer</TableHead><TableHead>Status</TableHead><TableHead>Date</TableHead><TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -62,14 +71,29 @@ const AdminReviews = () => {
                       <TableCell className="text-sm">{r.humanRisk}</TableCell>
                       <TableCell className="text-sm">{r.reviewer}</TableCell>
                       <TableCell>
-                        <Badge variant={r.status === "Reviewed" ? "default" : "secondary"} className={r.status === "Reviewed" ? "bg-success text-success-foreground border-transparent" : ""}>
-                          {r.status === "Reviewed" ? <CheckCircle className="h-3 w-3 mr-1" /> : <XCircle className="h-3 w-3 mr-1" />}
+                        <Badge variant={r.status === "Reviewed" || r.status === "approved" ? "default" : "secondary"} className={r.status === "Reviewed" || r.status === "approved" ? "bg-success text-success-foreground border-transparent" : ""}>
+                          {(r.status === "Reviewed" || r.status === "approved") ? <CheckCircle className="h-3 w-3 mr-1" /> : <XCircle className="h-3 w-3 mr-1" />}
                           {r.status}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">{r.date}</TableCell>
+                      <TableCell>
+                        {(r.status === "Pending" || r.status === "pending") && (
+                          <div className="flex gap-1">
+                            <Button variant="outline" size="sm" className="gap-1 text-success" onClick={() => handleAction(r.id, "approved")}>
+                              <ThumbsUp className="h-3 w-3" />Approve
+                            </Button>
+                            <Button variant="outline" size="sm" className="gap-1 text-destructive" onClick={() => handleAction(r.id, "rejected")}>
+                              <ThumbsDown className="h-3 w-3" />Reject
+                            </Button>
+                          </div>
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))}
+                  {reviews.length === 0 && (
+                    <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No reviews</TableCell></TableRow>
+                  )}
                 </TableBody>
               </Table>
             )}
