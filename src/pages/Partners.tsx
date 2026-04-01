@@ -181,64 +181,7 @@ const Partners = () => {
             </p>
           </div>
 
-          {/* Mock dashboard preview */}
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-200/50 overflow-hidden">
-            <div className="bg-slate-800 px-6 py-3 flex items-center gap-2">
-              <div className="flex gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-red-400" />
-                <div className="w-3 h-3 rounded-full bg-amber-400" />
-                <div className="w-3 h-3 rounded-full bg-emerald-400" />
-              </div>
-              <span className="text-xs text-slate-400 ml-4">
-                SafeVoice Dashboard
-              </span>
-            </div>
-            <div className="p-6 sm:p-8">
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-                {[
-                  { label: "Active cases", value: "47", change: "+3 today" },
-                  { label: "Avg response", value: "4 min", change: "↓ 12%" },
-                  { label: "This month", value: "128", change: "+18%" },
-                  { label: "Risk: High", value: "8", change: "2 new" },
-                ].map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="rounded-xl bg-slate-50 border border-slate-100 p-4"
-                  >
-                    <p className="text-xs text-slate-500 font-medium">
-                      {stat.label}
-                    </p>
-                    <p className="text-2xl font-bold text-slate-900 mt-1">
-                      {stat.value}
-                    </p>
-                    <p className="text-xs text-emerald-600 mt-1">
-                      {stat.change}
-                    </p>
-                  </div>
-                ))}
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {dashboardFeatures.map((f) => (
-                  <div
-                    key={f.title}
-                    className="flex items-start gap-4 rounded-xl bg-slate-50 border border-slate-100 p-5"
-                  >
-                    <div className="h-10 w-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-                      <f.icon className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-slate-900 text-sm">
-                        {f.title}
-                      </h4>
-                      <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                        {f.description}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <DashboardPreview />
         </div>
       </section>
 
