@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, Shield, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import QuickExit from "./QuickExit";
+
 import TenantSwitcher from "./TenantSwitcher";
 import { logout } from "@/lib/auth";
 
