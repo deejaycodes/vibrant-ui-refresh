@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import PortalLayout from "@/components/PortalLayout";
 import StatCard from "@/components/StatCard";
 import RiskBadge from "@/components/RiskBadge";
+import { StatCardSkeleton, TableSkeleton } from "@/components/Skeletons";
 import { getDashboard, getReports } from "@/lib/api";
 
 interface Report {
@@ -44,10 +45,16 @@ const Dashboard = () => {
           <p className="text-sm text-muted-foreground mt-1">Overview of cases and referrals</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard title="Total Cases" value={stats?.totalCases ?? "—"} icon={FileText} />
-          <StatCard title="Active Referrals" value={stats?.activeReferrals ?? "—"} icon={Users} />
-          <StatCard title="Critical Reports" value={stats?.criticalReports ?? "—"} icon={AlertTriangle} />
-          <StatCard title="Resolved" value={stats?.resolved ?? "—"} icon={CheckCircle2} />
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)
+          ) : (
+            <>
+              <StatCard title="Total Cases" value={stats?.totalCases ?? "—"} icon={FileText} />
+              <StatCard title="Active Referrals" value={stats?.activeReferrals ?? "—"} icon={Users} />
+              <StatCard title="Critical Reports" value={stats?.criticalReports ?? "—"} icon={AlertTriangle} />
+              <StatCard title="Resolved" value={stats?.resolved ?? "—"} icon={CheckCircle2} />
+            </>
+          )}
         </div>
         <Card className="shadow-sm">
           <CardHeader className="pb-3">
@@ -55,7 +62,7 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             {loading ? (
-              <p className="text-sm text-muted-foreground">Loading…</p>
+              <TableSkeleton columns={5} rows={5} />
             ) : (
               <Table>
                 <TableHeader>

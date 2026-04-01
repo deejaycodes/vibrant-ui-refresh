@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import PortalLayout from "@/components/PortalLayout";
 import RiskBadge from "@/components/RiskBadge";
+import { TableSkeleton } from "@/components/Skeletons";
 import { getReferrals } from "@/lib/api";
 
 interface Referral {
@@ -47,7 +48,7 @@ const Referrals = () => {
           </CardHeader>
           <CardContent>
             {loading ? (
-              <p className="text-sm text-muted-foreground">Loading…</p>
+              <TableSkeleton columns={6} rows={4} />
             ) : (
               <Table>
                 <TableHeader>

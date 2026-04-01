@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import PortalLayout from "@/components/PortalLayout";
+import { TableSkeleton } from "@/components/Skeletons";
 import { getAuditLog } from "@/lib/api";
 
 interface AuditEntry {
@@ -63,24 +64,28 @@ const AdminAudit = () => {
         </div>
         <Card className="shadow-sm">
           <CardContent className="pt-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Action</TableHead><TableHead>User</TableHead><TableHead>Resource</TableHead><TableHead>Details</TableHead><TableHead>Timestamp</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filtered.map((e) => (
-                  <TableRow key={e.id}>
-                    <TableCell><Badge variant="secondary" className={actionColor(e.action)}>{e.action}</Badge></TableCell>
-                    <TableCell className="text-sm">{e.user}</TableCell>
-                    <TableCell className="text-sm font-medium">{e.resource}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{e.details}</TableCell>
-                    <TableCell className="text-xs text-muted-foreground font-mono">{e.timestamp}</TableCell>
+            {loading ? (
+              <TableSkeleton columns={5} rows={6} />
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Action</TableHead><TableHead>User</TableHead><TableHead>Resource</TableHead><TableHead>Details</TableHead><TableHead>Timestamp</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map((e) => (
+                    <TableRow key={e.id}>
+                      <TableCell><Badge variant="secondary" className={actionColor(e.action)}>{e.action}</Badge></TableCell>
+                      <TableCell className="text-sm">{e.user}</TableCell>
+                      <TableCell className="text-sm font-medium">{e.resource}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{e.details}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground font-mono">{e.timestamp}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
         </Card>
       </div>

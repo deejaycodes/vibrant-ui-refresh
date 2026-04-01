@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Phone, Globe, Search } from "lucide-react";
 import PortalLayout from "@/components/PortalLayout";
+import { CardSkeleton } from "@/components/Skeletons";
 import { getServices } from "@/lib/api";
 
 interface Service {
@@ -52,7 +53,9 @@ const Services = () => {
           <Input placeholder="Search services…" value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
         </div>
         {loading ? (
-          <p className="text-sm text-muted-foreground">Loading…</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map((s) => (

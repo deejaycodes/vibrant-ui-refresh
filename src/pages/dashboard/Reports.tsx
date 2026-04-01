@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import PortalLayout from "@/components/PortalLayout";
 import RiskBadge from "@/components/RiskBadge";
+import { TableSkeleton } from "@/components/Skeletons";
 import { getReports } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 
@@ -45,7 +46,7 @@ const Reports = () => {
         <Card className="shadow-sm">
           <CardContent className="pt-6">
             {loading ? (
-              <p className="text-sm text-muted-foreground">Loading…</p>
+              <TableSkeleton columns={6} rows={6} />
             ) : (
               <Table>
                 <TableHeader>
