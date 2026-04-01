@@ -120,6 +120,13 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* Privacy Reassurance */}
+      <div className="bg-slate-900 text-white text-center px-6 py-5">
+        <p className="text-base sm:text-lg font-medium tracking-wide">
+          No app to download. No trace on your phone. Messages are encrypted.
+        </p>
+      </div>
+
       {/* How We Help */}
       <section className="max-w-6xl mx-auto px-6 py-20 sm:py-24">
         <div className="text-center mb-14">
