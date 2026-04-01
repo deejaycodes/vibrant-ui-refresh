@@ -40,7 +40,7 @@ export async function register(payload: {
 
 export function logout() {
   localStorage.removeItem("safevoice_token");
-  window.location.href = "/login";
+  window.location.href = "/";
 }
 
 export function isAuthenticated(): boolean {
