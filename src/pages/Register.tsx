@@ -75,7 +75,7 @@ const Register = () => {
           </form>
           <p className="text-center text-sm text-muted-foreground mt-4">
             Already registered?{" "}
-            <Link to="/login" className="text-primary font-medium hover:underline">Sign in</Link>
+            <Link to="/" className="text-primary font-medium hover:underline">Sign in</Link>
           </p>
         </CardContent>
       </Card>
