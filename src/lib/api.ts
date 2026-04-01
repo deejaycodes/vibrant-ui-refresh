@@ -13,7 +13,6 @@ export function getToken(): string | null {
 }
 
 export function handleAuthError() {
-  if (isDemoMode()) return; // Don't redirect in demo mode
   localStorage.removeItem("safevoice_token");
   window.location.href = "/";
 }
