@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { register } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle } from "lucide-react";
-import QuickExit from "@/components/QuickExit";
+
 
 const Register = () => {
   const [form, setForm] = useState({ orgName: "", contactPerson: "", email: "", phone: "", password: "" });
