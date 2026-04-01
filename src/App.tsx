@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import Offline from "./pages/Offline";
+import Landing from "./pages/Landing";
 
 import Referrals from "./pages/dashboard/Referrals";
 import ReferralDetail from "./pages/dashboard/ReferralDetail";
@@ -41,6 +42,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/landing" element={<Landing />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<P><Dashboard /></P>} />
           <Route path="/dashboard/referrals" element={<P><Referrals /></P>} />
