@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { setTenant, getTenant } from "@/lib/api";
 
 const tenants = [
   { id: "uk", label: "🇬🇧 UK" },
@@ -8,11 +9,13 @@ const tenants = [
 ];
 
 const TenantSwitcher = () => {
-  const [current, setCurrent] = useState(() => localStorage.getItem("safevoice_tenant") || "uk");
+  const [current, setCurrent] = useState(() => getTenant());
 
-  useEffect(() => {
-    localStorage.setItem("safevoice_tenant", current);
-  }, [current]);
+  const handleSwitch = (id: string) => {
+    setCurrent(id);
+    setTenant(id);
+    window.location.reload();
+  };
 
   return (
     <div className="flex items-center gap-1">
@@ -22,7 +25,7 @@ const TenantSwitcher = () => {
           key={t.id}
           variant={current === t.id ? "secondary" : "ghost"}
           size="sm"
-          onClick={() => setCurrent(t.id)}
+          onClick={() => handleSwitch(t.id)}
           className="text-xs h-7 px-2"
         >
           {t.label}

@@ -3,7 +3,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Search, CalendarIcon, X } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 import PortalLayout from "@/components/PortalLayout";
 import { TableSkeleton } from "@/components/Skeletons";
 import { getAuditLog } from "@/lib/api";
@@ -17,30 +23,40 @@ interface AuditEntry {
   timestamp: string;
 }
 
+const ACTION_TYPES = ["all", "LOGIN", "VIEW", "CREATE", "UPDATE", "DELETE", "HANDOFF", "EXPORT"];
+
 const AdminAudit = () => {
   const [entries, setEntries] = useState<AuditEntry[]>([]);
   const [search, setSearch] = useState("");
+  const [actionFilter, setActionFilter] = useState("all");
+  const [userFilter, setUserFilter] = useState("");
+  const [fromDate, setFromDate] = useState<Date>();
+  const [toDate, setToDate] = useState<Date>();
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    getAuditLog()
+  const fetchAudit = () => {
+    setLoading(true);
+    getAuditLog({
+      search: search || undefined,
+      action: actionFilter !== "all" ? actionFilter : undefined,
+      user: userFilter || undefined,
+      from: fromDate ? format(fromDate, "yyyy-MM-dd") : undefined,
+      to: toDate ? format(toDate, "yyyy-MM-dd") : undefined,
+    })
       .then((data) => setEntries(data?.entries || []))
-      .catch(() => {
-        setEntries([
-          { id: "A-001", action: "LOGIN", user: "sarah@womensaid.org", resource: "Auth", details: "Successful login", timestamp: "2025-03-28 14:32:00" },
-          { id: "A-002", action: "VIEW", user: "james@refuge.org", resource: "Report R-001", details: "Viewed critical report", timestamp: "2025-03-28 14:28:00" },
-          { id: "A-003", action: "UPDATE", user: "sarah@womensaid.org", resource: "Referral REF-101", details: "Status changed to Accepted", timestamp: "2025-03-28 14:15:00" },
-          { id: "A-004", action: "CREATE", user: "lisa@mind.org", resource: "Meeting M-001", details: "Scheduled case review", timestamp: "2025-03-28 13:45:00" },
-          { id: "A-005", action: "HANDOFF", user: "james@refuge.org", resource: "Case R-003", details: "Handed off to Lisa P.", timestamp: "2025-03-28 12:00:00" },
-          { id: "A-006", action: "EXPORT", user: "sarah@womensaid.org", resource: "Reports", details: "Exported monthly report", timestamp: "2025-03-28 11:30:00" },
-        ]);
-      })
+      .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  };
 
-  const filtered = entries.filter((e) =>
-    `${e.action} ${e.user} ${e.resource} ${e.details}`.toLowerCase().includes(search.toLowerCase())
-  );
+  useEffect(() => { fetchAudit(); }, []);
+
+  // Client-side filtering as fallback
+  const filtered = entries.filter((e) => {
+    const matchSearch = !search || `${e.action} ${e.user} ${e.resource} ${e.details}`.toLowerCase().includes(search.toLowerCase());
+    const matchAction = actionFilter === "all" || e.action === actionFilter;
+    const matchUser = !userFilter || e.user.toLowerCase().includes(userFilter.toLowerCase());
+    return matchSearch && matchAction && matchUser;
+  });
 
   const actionColor = (action: string) => {
     switch (action) {
@@ -51,6 +67,12 @@ const AdminAudit = () => {
     }
   };
 
+  const clearFilters = () => {
+    setSearch(""); setActionFilter("all"); setUserFilter(""); setFromDate(undefined); setToDate(undefined);
+  };
+
+  const hasFilters = search || actionFilter !== "all" || userFilter || fromDate || toDate;
+
   return (
     <PortalLayout>
       <div className="space-y-6 max-w-6xl">
@@ -58,10 +80,50 @@ const AdminAudit = () => {
           <h1 className="text-2xl font-semibold tracking-tight">Audit Log</h1>
           <p className="text-sm text-muted-foreground mt-1">Track all system activity and user actions</p>
         </div>
-        <div className="relative max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search audit log…" value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+
+        {/* Filters */}
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="relative w-56">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input placeholder="Search…" value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+          </div>
+          <Select value={actionFilter} onValueChange={setActionFilter}>
+            <SelectTrigger className="w-36"><SelectValue placeholder="Action type" /></SelectTrigger>
+            <SelectContent>
+              {ACTION_TYPES.map((a) => (
+                <SelectItem key={a} value={a}>{a === "all" ? "All actions" : a}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Input placeholder="Filter by user" value={userFilter} onChange={(e) => setUserFilter(e.target.value)} className="w-48" />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className={cn("w-36 justify-start text-left font-normal text-xs", !fromDate && "text-muted-foreground")}>
+                <CalendarIcon className="mr-1 h-3.5 w-3.5" />
+                {fromDate ? format(fromDate, "MMM dd") : "From"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar mode="single" selected={fromDate} onSelect={setFromDate} initialFocus className={cn("p-3 pointer-events-auto")} />
+            </PopoverContent>
+          </Popover>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className={cn("w-36 justify-start text-left font-normal text-xs", !toDate && "text-muted-foreground")}>
+                <CalendarIcon className="mr-1 h-3.5 w-3.5" />
+                {toDate ? format(toDate, "MMM dd") : "To"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar mode="single" selected={toDate} onSelect={setToDate} initialFocus className={cn("p-3 pointer-events-auto")} />
+            </PopoverContent>
+          </Popover>
+          <Button variant="secondary" size="sm" onClick={fetchAudit}>Apply</Button>
+          {hasFilters && (
+            <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-1"><X className="h-3.5 w-3.5" />Clear</Button>
+          )}
         </div>
+
         <Card className="shadow-sm">
           <CardContent className="pt-6">
             {loading ? (
@@ -83,6 +145,9 @@ const AdminAudit = () => {
                       <TableCell className="text-xs text-muted-foreground font-mono">{e.timestamp}</TableCell>
                     </TableRow>
                   ))}
+                  {filtered.length === 0 && (
+                    <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">No entries found</TableCell></TableRow>
+                  )}
                 </TableBody>
               </Table>
             )}

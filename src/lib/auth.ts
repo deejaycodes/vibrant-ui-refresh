@@ -1,5 +1,26 @@
 const API_BASE = import.meta.env.VITE_API_URL || "https://api.safevoice.org";
 
+export function getToken(): string | null {
+  return localStorage.getItem("safevoice_token");
+}
+
+export function setToken(token: string) {
+  localStorage.setItem("safevoice_token", token);
+}
+
+export function clearToken() {
+  localStorage.removeItem("safevoice_token");
+}
+
+export function isAuthenticated(): boolean {
+  return !!getToken();
+}
+
+export function handleAuthError() {
+  clearToken();
+  window.location.href = "/";
+}
+
 export async function login(email: string, password: string) {
   const res = await fetch(`${API_BASE}/api/auth/login`, {
     method: "POST",
@@ -13,7 +34,7 @@ export async function login(email: string, password: string) {
   }
 
   const data = await res.json();
-  localStorage.setItem("safevoice_token", data.token);
+  setToken(data.token);
   return data;
 }
 
@@ -39,10 +60,6 @@ export async function register(payload: {
 }
 
 export function logout() {
-  localStorage.removeItem("safevoice_token");
+  clearToken();
   window.location.href = "/";
-}
-
-export function isAuthenticated(): boolean {
-  return !!localStorage.getItem("safevoice_token");
 }

@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import AuthGuard from "@/components/AuthGuard";
 
 import Index from "./pages/Index";
 import Register from "./pages/Register";
@@ -28,6 +29,10 @@ import AdminAudit from "./pages/admin/Audit";
 
 const queryClient = new QueryClient();
 
+const P = ({ children }: { children: React.ReactNode }) => (
+  <AuthGuard>{children}</AuthGuard>
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -37,21 +42,21 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/referrals" element={<Referrals />} />
-          <Route path="/dashboard/referrals/:id" element={<ReferralDetail />} />
-          <Route path="/dashboard/copilot" element={<Copilot />} />
-          <Route path="/dashboard/handoff" element={<Handoff />} />
-          <Route path="/dashboard/meetings" element={<Meetings />} />
-          <Route path="/dashboard/services" element={<Services />} />
-          <Route path="/dashboard/analytics" element={<Analytics />} />
-          <Route path="/dashboard/reports" element={<Reports />} />
-          <Route path="/dashboard/settings" element={<SettingsPage />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/prompts" element={<AdminPrompts />} />
-          <Route path="/admin/reviews" element={<AdminReviews />} />
-          <Route path="/admin/audit" element={<AdminAudit />} />
+          <Route path="/dashboard" element={<P><Dashboard /></P>} />
+          <Route path="/dashboard/referrals" element={<P><Referrals /></P>} />
+          <Route path="/dashboard/referrals/detail" element={<P><ReferralDetail /></P>} />
+          <Route path="/dashboard/copilot" element={<P><Copilot /></P>} />
+          <Route path="/dashboard/handoff" element={<P><Handoff /></P>} />
+          <Route path="/dashboard/meetings" element={<P><Meetings /></P>} />
+          <Route path="/dashboard/services" element={<P><Services /></P>} />
+          <Route path="/dashboard/analytics" element={<P><Analytics /></P>} />
+          <Route path="/dashboard/reports" element={<P><Reports /></P>} />
+          <Route path="/dashboard/settings" element={<P><SettingsPage /></P>} />
+          <Route path="/admin" element={<P><Admin /></P>} />
+          <Route path="/admin/users" element={<P><AdminUsers /></P>} />
+          <Route path="/admin/prompts" element={<P><AdminPrompts /></P>} />
+          <Route path="/admin/reviews" element={<P><AdminReviews /></P>} />
+          <Route path="/admin/audit" element={<P><AdminAudit /></P>} />
           <Route path="/offline" element={<Offline />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
