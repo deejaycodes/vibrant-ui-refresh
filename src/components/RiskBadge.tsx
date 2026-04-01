@@ -3,22 +3,19 @@ import { cn } from "@/lib/utils";
 
 interface RiskBadgeProps {
   level: "critical" | "high" | "medium" | "low";
+  className?: string;
 }
 
 const config = {
-  critical: { label: "Critical", className: "bg-destructive text-destructive-foreground hover:bg-destructive/80" },
-  high: { label: "High", className: "bg-warning text-warning-foreground hover:bg-warning/80" },
-  medium: { label: "Medium", className: "bg-accent text-accent-foreground hover:bg-accent/80" },
-  low: { label: "Low", className: "bg-secondary text-secondary-foreground hover:bg-secondary/80" },
+  critical: { label: "Critical", className: "bg-[hsl(var(--risk-critical))] text-destructive-foreground border-transparent" },
+  high: { label: "High", className: "bg-[hsl(var(--risk-high))] text-warning-foreground border-transparent" },
+  medium: { label: "Medium", className: "bg-[hsl(var(--risk-medium))] text-info-foreground border-transparent" },
+  low: { label: "Low", className: "bg-[hsl(var(--risk-low))] text-success-foreground border-transparent" },
 };
 
-const RiskBadge = ({ level }: RiskBadgeProps) => {
-  const { label, className } = config[level];
-  return (
-    <Badge className={cn(className)}>
-      {label}
-    </Badge>
-  );
+const RiskBadge = ({ level, className }: RiskBadgeProps) => {
+  const c = config[level];
+  return <Badge className={cn(c.className, className)}>{c.label}</Badge>;
 };
 
 export default RiskBadge;

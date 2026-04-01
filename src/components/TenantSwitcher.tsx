@@ -4,13 +4,11 @@ import { Button } from "@/components/ui/button";
 
 const tenants = [
   { id: "uk", label: "🇬🇧 UK" },
-  { id: "ng", label: "🇳🇬 Nigeria" },
+  { id: "ng", label: "🇳🇬 NG" },
 ];
 
 const TenantSwitcher = () => {
-  const [current, setCurrent] = useState(() => {
-    return localStorage.getItem("safevoice_tenant") || "uk";
-  });
+  const [current, setCurrent] = useState(() => localStorage.getItem("safevoice_tenant") || "uk");
 
   useEffect(() => {
     localStorage.setItem("safevoice_tenant", current);
@@ -18,11 +16,11 @@ const TenantSwitcher = () => {
 
   return (
     <div className="flex items-center gap-1">
-      <Globe className="h-4 w-4 text-muted-foreground" />
+      <Globe className="h-3.5 w-3.5 text-muted-foreground" />
       {tenants.map((t) => (
         <Button
           key={t.id}
-          variant={current === t.id ? "default" : "ghost"}
+          variant={current === t.id ? "secondary" : "ghost"}
           size="sm"
           onClick={() => setCurrent(t.id)}
           className="text-xs h-7 px-2"
