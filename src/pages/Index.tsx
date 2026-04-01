@@ -23,11 +23,7 @@ const Login = () => {
       await login(email, password);
       navigate("/dashboard");
     } catch (err: any) {
-      // Fallback to demo mode when API is unreachable
-      setToken("demo-token");
-      localStorage.setItem("safevoice_demo", "true");
-      toast({ title: "API unavailable — entering Demo Mode", description: "Using sample data for preview.", variant: "default" });
-      navigate("/dashboard");
+      toast({ title: "Login failed", description: err.message || "Please try again.", variant: "destructive" });
     } finally {
       setLoading(false);
     }
