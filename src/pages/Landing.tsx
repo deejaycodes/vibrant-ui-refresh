@@ -38,8 +38,8 @@ const iconColors = [
 const steps = [
   { step: 1, title: "Open WhatsApp", description: "Tap the green button to start a confidential chat." },
   { step: 2, title: "Tell us what you need", description: "Share as much or as little as you're comfortable with." },
-  { step: 3, title: "Get matched with support", description: "Our AI copilot finds the right local services for you." },
-  { step: 4, title: "Receive ongoing help", description: "Your advisor follows up to make sure you're safe." },
+  { step: 3, title: "Get matched with support", description: "We find the right local services for your situation." },
+  { step: 4, title: "Receive ongoing help", description: "We follow up to make sure you're safe." },
 ];
 
 const languages = [
