@@ -188,7 +188,7 @@ const Landing = () => {
           Support in your language
         </h2>
         <p className="mt-4 text-slate-600">
-          Our advisors can help you in any of these languages.
+          We can help you in any of these languages.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-2.5">
           {languages.map((lang) => (
