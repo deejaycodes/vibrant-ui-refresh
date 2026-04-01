@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import DashboardPreview from "@/components/DashboardPreview";
 import {
   Shield,
   MessageCircle,
