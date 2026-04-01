@@ -38,7 +38,7 @@ const Register = () => {
             <CheckCircle className="h-12 w-12 text-success mx-auto" />
             <h2 className="text-xl font-semibold">Registration Submitted</h2>
             <p className="text-sm text-muted-foreground">Your organisation is pending approval. We'll be in touch shortly.</p>
-            <Link to="/login"><Button variant="outline">Back to Login</Button></Link>
+            <Link to="/"><Button variant="outline">Back to Login</Button></Link>
           </CardContent>
         </Card>
       </div>
