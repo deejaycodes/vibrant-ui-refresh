@@ -74,7 +74,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup open={isAdmin} defaultOpen>
+        <SidebarGroup defaultOpen>
           <SidebarGroupLabel>Admin</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
