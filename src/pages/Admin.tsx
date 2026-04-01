@@ -9,38 +9,17 @@ import StatCard from "@/components/StatCard";
 import { getStats, getHealthCheck, getGenerations, runCron } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 
-interface AdminStats {
-  survivors: number;
-  activeConversations: number;
-  reports: number;
-  referrals: number;
-  messages: number;
-  cost: string;
-}
-
-interface Generation {
-  id: string;
-  model: string;
-  tokens: number;
-  cost: string;
-  timestamp: string;
-}
-
 const Admin = () => {
-  const [stats, setStats] = useState<AdminStats | null>(null);
-  const [health, setHealth] = useState<{ status: string } | null>(null);
-  const [generations, setGenerations] = useState<Generation[]>([]);
+  const [stats, setStats] = useState<any>(null);
+  const [health, setHealth] = useState<any>(null);
+  const [generations, setGenerations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   const fetchAll = () => {
     setLoading(true);
     Promise.all([getStats(), getHealthCheck(), getGenerations()])
-      .then(([s, h, g]) => {
-        setStats(s);
-        setHealth(h);
-        setGenerations(g?.generations || []);
-      })
+      .then(([s, h, g]) => { setStats(s); setHealth(h); setGenerations(g?.generations || []); })
       .catch(() => {
         setStats({ survivors: 1243, activeConversations: 67, reports: 892, referrals: 341, messages: 15420, cost: "£247.50" });
         setHealth({ status: "healthy" });
@@ -56,30 +35,27 @@ const Admin = () => {
   useEffect(() => { fetchAll(); }, []);
 
   const handleCron = async () => {
-    try {
-      await runCron();
-      toast({ title: "Cron job triggered" });
-    } catch {
-      toast({ title: "Cron failed", variant: "destructive" });
-    }
+    try { await runCron(); toast({ title: "Cron job triggered" }); }
+    catch { toast({ title: "Cron failed", variant: "destructive" }); }
   };
 
   return (
     <PortalLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 max-w-6xl">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-foreground">Admin</h1>
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Admin Overview</h1>
+            <p className="text-sm text-muted-foreground mt-1">System health and platform metrics</p>
+          </div>
           <div className="flex items-center gap-2">
             {health && (
-              <Badge variant={health.status === "healthy" ? "default" : "destructive"} className={health.status === "healthy" ? "bg-success text-success-foreground" : ""}>
-                <Activity className="h-3 w-3 mr-1" />
-                {health.status}
+              <Badge className={health.status === "healthy" ? "bg-success text-success-foreground border-transparent" : "bg-destructive text-destructive-foreground border-transparent"}>
+                <Activity className="h-3 w-3 mr-1" />{health.status}
               </Badge>
             )}
           </div>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <StatCard title="Survivors" value={stats?.survivors ?? "—"} icon={Users} />
           <StatCard title="Active Conversations" value={stats?.activeConversations ?? "—"} icon={MessageSquare} />
@@ -89,48 +65,32 @@ const Admin = () => {
           <StatCard title="AI Cost" value={stats?.cost ?? "—"} icon={DollarSign} />
         </div>
 
-        {/* Actions */}
         <div className="flex gap-3">
-          <Button onClick={handleCron} variant="outline" className="gap-2">
-            <Play className="h-4 w-4" /> Run Cron
-          </Button>
-          <Button onClick={fetchAll} variant="outline" className="gap-2">
-            <RefreshCw className="h-4 w-4" /> Refresh
-          </Button>
+          <Button onClick={handleCron} variant="outline" className="gap-2"><Play className="h-4 w-4" />Run Cron</Button>
+          <Button onClick={fetchAll} variant="outline" className="gap-2"><RefreshCw className="h-4 w-4" />Refresh</Button>
         </div>
 
-        {/* Generations */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">AI Generations Log</CardTitle>
-          </CardHeader>
+        <Card className="shadow-sm">
+          <CardHeader className="pb-3"><CardTitle className="text-base font-medium">AI Generations Log</CardTitle></CardHeader>
           <CardContent>
-            {loading ? (
-              <p className="text-muted-foreground text-sm">Loading…</p>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Model</TableHead>
-                    <TableHead>Tokens</TableHead>
-                    <TableHead>Cost</TableHead>
-                    <TableHead>Timestamp</TableHead>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead><TableHead>Model</TableHead><TableHead>Tokens</TableHead><TableHead>Cost</TableHead><TableHead>Timestamp</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {generations.map((g: any) => (
+                  <TableRow key={g.id}>
+                    <TableCell className="font-mono text-xs">{g.id}</TableCell>
+                    <TableCell><Badge variant="secondary">{g.model}</Badge></TableCell>
+                    <TableCell>{g.tokens?.toLocaleString()}</TableCell>
+                    <TableCell>{g.cost}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{g.timestamp}</TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {generations.map((g) => (
-                    <TableRow key={g.id}>
-                      <TableCell className="font-mono text-sm">{g.id}</TableCell>
-                      <TableCell><Badge variant="secondary">{g.model}</Badge></TableCell>
-                      <TableCell>{g.tokens.toLocaleString()}</TableCell>
-                      <TableCell>{g.cost}</TableCell>
-                      <TableCell className="text-muted-foreground">{g.timestamp}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       </div>
